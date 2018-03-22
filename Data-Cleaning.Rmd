@@ -7,6 +7,37 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-lapply(c("tidyverse", "magrittr", "RCurl"), require, character.only=TRUE)
+lapply(c("tidyverse", "magrittr", "RCurl", "XML", "kableExtra"), require, character.only=TRUE)
+```
+
+## Load Dataset
+```{r load-data}
+plainText <- getURL("https://raw.githubusercontent.com/baroncurtin2/data607-project3/master/data/cleanjobfiles.txt") %>%
+  read_lines %>%
+  paste(collapse = " ") 
+```
+
+## Convert Massive Text String to Vector to Data Frame
+  * The objective here is to attempt to create a "regular" dataset
+  * Key characteristics will be one job posting per row
+
+```{r convert}
+jobPostings <- plainText %>%
+  # extract all instances of span tag
+  str_extract_all('(<span id=(.*?)>)(.*?)(</span>)') %>%
+  # unnest the list
+  unlist %>%
+  # convert to data frame
+  data_frame(jobPost = .)
+```
+
+
+## Tidy the Data
+  * The key objective here is to break up the singular column into multiple columns
+  
+  
+## Generate CSV File
+```{r write-csv}
+write_csv(jobPostings, "./data/jobpostings.csv")
 ```
 
