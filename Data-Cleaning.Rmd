@@ -86,6 +86,14 @@ for(i in 3:ncol(dataNA)) {
   
 ## Generate CSV File
 ```{r write-csv}
+# bind rows of NA and nonNA
+jobPostings <- bind_rows(nonNA, dataNA)
+
+# show table
+knitr::kable(head(jobPostings, 10), "html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+# write csv
 write_csv(jobPostings, "./data/jobpostings.csv")
 ```
 
