@@ -86,11 +86,13 @@ for(i in 3:ncol(dataNA)) {
 # supplemental cleaning dataNA
 dataNA %<>%
   mutate(sql = str_count(requirements, "([[:punct:][:blank:]]?(sql)[[:punct:][:blank:]]{1})")) %>%
+  mutate(nosql = str_count(requirements, "([[:punct:][:blank:]]?(nosql)[[:punct:][:blank:]]{1})")) %>%
   mutate(machine_learning = str_count(requirements, "([[:punct:][:blank:]]?(machine learning)[[:punct:][:blank:]]{1})"))
  
 # # supplemental cleaning nonNA
 nonNA %<>%
   mutate(sql = str_count(briefing, "([[:punct:][:blank:]]?(sql)[[:punct:][:blank:]]{1})")) %>%
+  mutate(nosql = str_count(briefing, "([[:punct:][:blank:]]?(nosql)[[:punct:][:blank:]]{1})")) %>%
   mutate(machine_learning = str_count(briefing, "([[:punct:][:blank:]]?(machine learning)[[:punct:][:blank:]]{1})"))
 
 # bind rows of NA and nonNA
