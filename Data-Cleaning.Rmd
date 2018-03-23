@@ -92,12 +92,20 @@ nonNA %<>%
   mutate(sql = str_count(briefing, "([[:punct:][:blank:]]?sql[[:punct:][:blank:]]{1})"))
 
 # bind rows of NA and nonNA
-jobPostings <- bind_rows(nonNA, dataNA)
+jobPostings <- bind_rows(nonNA, dataNA) %>%
+  select(-52)
+
+# create keyword summary
+keywordSummary <- jobPostings %>%
+  select(-(1:2)) %>%
+  gather(keyword, kw_count) %>%
+  group_by(keyword) %>%
+  summarise(kw_count = sum(kw_count))
 ```
   
   
   
-## Generate CSV File
+## Generate CSV Files
 ```{r write-csv}
 # show table
 knitr::kable(head(jobPostings, 10), "html") %>%
