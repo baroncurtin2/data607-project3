@@ -55,7 +55,9 @@ jobPostings <- plainText %>%
 
 separateCols <- jobPostings %>%
   # separate jobPost column into the "summary" and "requirements" of role
-  separate(col=jobPost, into=c("summary", "requirements"), sep="<ul>|<li>", extra = "merge", fill="right")
+  separate(col=jobPost, into=c("briefing", "requirements"), sep="<ul>|<li>", extra = "merge", fill="right") %>%
+  # convert to lowercase
+  mutate_at(vars(briefing:requirements), funs(str_to_lower))
 
 # add search term columns
 separateCols <- cbind(separateCols, termsDf)  
@@ -68,7 +70,7 @@ nonNA <- separateCols %>%
 
 # get counts of keywords
 for(i in 3:ncol(nonNA)) {
-  nonNA[, i] <- str_count(nonNA$requirements, colnames(nonNA)[i])
+  nonNA[, i] <- str_count(nonNA$requirements, str_c(c("([^[:alpha:]]", "[[:punct:][:blank:]]?", colnames(nonNA)[i], "[[:punct:][:blank:]]{1})"), collapse = ""))
 }
 
 # dataset for NA
@@ -78,17 +80,25 @@ dataNA <- separateCols %>%
 
 # get counts of keywords
 for(i in 3:ncol(dataNA)) {
-  dataNA[, i] <- str_count(dataNA$summary, colnames(dataNA)[i])
+  dataNA[, i] <- str_count(dataNA$briefing, str_c(c("([^[:alpha:]]", "[[:punct:][:blank:]]?", colnames(dataNA)[i], "[[:punct:][:blank:]]{1})"), collapse = ""))
 }
+
+# supplemental cleaning dataNA
+dataNA %<>%
+  mutate(sql = str_count(requirements, "([[:punct:][:blank:]]?(sql)[[:punct:][:blank:]]{1})"))
+# 
+# # supplemental cleaning nonNA
+nonNA %<>%
+  mutate(sql = str_count(briefing, "([[:punct:][:blank:]]?sql[[:punct:][:blank:]]{1})"))
+
+# bind rows of NA and nonNA
+jobPostings <- bind_rows(nonNA, dataNA)
 ```
   
   
   
 ## Generate CSV File
 ```{r write-csv}
-# bind rows of NA and nonNA
-jobPostings <- bind_rows(nonNA, dataNA)
-
 # show table
 knitr::kable(head(jobPostings, 10), "html") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
