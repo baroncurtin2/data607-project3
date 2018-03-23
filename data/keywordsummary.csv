@@ -1,10 +1,16 @@
 keyword,kw_count
+\\.net,0
 advanced degree,16
+amazon web services,3
+architect,5
 aws,21
 bi,13
+big data,70
+business intelligence,25
 c,26
-c/c++,0
-c++,26
+c/c\\+\\+,0
+c\\+\\+,0
+calculus,3
 cfa,16
 clear,26
 cloud,55
@@ -12,7 +18,10 @@ collaboration,28
 command line,1
 concise,19
 d3,10
+data cleansing,2
+data engineer,3
 data mining,44
+data wrangling,1
 database,63
 decision forests,0
 deep learning,19
@@ -21,22 +30,35 @@ excellent communication,13
 experience,1136
 fast paced,10
 geo,1
+ggplot2,2
+git,15
 gtex,2
 hadoop,73
 hdfs,2
 hive,33
 interpersonal,24
 java,60
+javascript,18
+json,4
 jupyter notebook,1
+keras,2
+kpi,1
 large data,32
+lead,53
+leader,24
 linux,22
-machine_learning,100
+machine learning,199
 map reduce,2
 matlab,21
+matplotlab,0
+model,89
+modelling,10
 natural language,31
 neural networks,11
-nosql,1
+nosql,20
+numpy,4
 optimistic,2
+pandas,13
 pca,1
 perl,7
 phd,83
@@ -45,16 +67,23 @@ pig,13
 python,163
 r,150
 r shiny,3
+reporting,65
+research,556
 restful api,1
 risk management,26
 ruby,5
 sas,77
 scala,43
-sql,4
+scikit,11
+scipy,2
+spark,60
+sql,126
 sra,1
+srss,0
 statistics,165
 svm,7
 tableau,35
+tensorflow,13
 unix,11
 unsupervised,8
 visualization,50
