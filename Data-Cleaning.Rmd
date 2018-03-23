@@ -16,23 +16,16 @@ plainText <- getURL("https://raw.githubusercontent.com/baroncurtin2/data607-proj
   read_lines %>%
   paste(collapse = " ")
 
+sf_plainText <- getURL("https://raw.githubusercontent.com/baroncurtin2/data607-project3/master/data/sf_cleanjobfiles.txt") %>%
+  read_lines %>%
+  paste(collapse = " ")
+
 searchTerms <- getURL("https://raw.githubusercontent.com/baroncurtin2/data607-project3/master/data/searchterms.csv") %>%
   read_csv(col_names = FALSE, trim_ws = TRUE) %>%
   # remove newline
   mutate(X1 = str_replace_all(X1, "\\n", "")) %>%
   # convert to vector
   pull(1)
-
-# helper function
-returnZero <- function(x) 0
-
-# create empty data frame
-termsDf <- data.frame(matrix(nrow = 300, ncol = length(searchTerms)))
-# give dataframe column names
-colnames(termsDf) <- searchTerms
-# mutate rows so they are all the column name
-termsDf %<>%
-  mutate_all(funs(returnZero(.)))
 ```
 
 ## Convert Massive Text String to Vector to Data Frame
@@ -47,6 +40,33 @@ jobPostings <- plainText %>%
   unlist %>%
   # convert to data frame
   data_frame(jobPost = .)
+
+sf_jobPostings <- sf_plainText %>%
+  # extract all instances of span tag
+  str_extract_all('(<span id=(.*?)>)(.*?)(</span>)') %>%
+  # unnest the list
+  unlist %>%
+  # convert to data frame
+  data_frame(jobPost = .)
+
+# SEARCH TERMS OPERATIONS
+# helper function
+returnZero <- function(x) 0
+
+# create empty data frame
+termsDf <- data.frame(matrix(nrow = NROW(jobPostings), ncol = length(searchTerms)))
+# give dataframe column names
+colnames(termsDf) <- searchTerms
+# mutate rows so they are all the column name
+termsDf %<>%
+  mutate_all(funs(returnZero(.)))
+
+sf_termsDf <- data.frame(matrix(nrow = NROW(sf_jobPostings), ncol = length(searchTerms)))
+# give dataframe column names
+colnames(sf_termsDf) <- searchTerms
+# mutate rows so they are all the column name
+sf_termsDf %<>%
+  mutate_all(funs(returnZero(.)))
 ```
 
 
@@ -61,11 +81,23 @@ separateCols <- jobPostings %>%
   # convert to lowercase
   mutate_at(vars(briefing:requirements), funs(str_to_lower))
 
+sf_separateCols <- sf_jobPostings %>%
+  # separate jobPost column into the "summary" and "requirements" of role
+  separate(col=jobPost, into=c("briefing", "requirements"), sep="<ul>|<li>", extra = "merge", fill="right") %>%
+  # convert to lowercase
+  mutate_at(vars(briefing:requirements), funs(str_to_lower))
+
 # add search term columns
-separateCols <- cbind(separateCols, termsDf)  
+separateCols <- cbind(separateCols, termsDf)
+sf_separateCols <- cbind(sf_separateCols, termsDf) 
 
 # dataset for non-NA
 nonNA <- separateCols %>%
+  # filter for non-NA
+  filter(!is.na(requirements))
+  #mutate_at(vars(ruby:visualization), funs())
+
+sf_nonNA <- sf_separateCols %>%
   # filter for non-NA
   filter(!is.na(requirements))
   #mutate_at(vars(ruby:visualization), funs())
@@ -74,15 +106,24 @@ nonNA <- separateCols %>%
 for(i in 3:ncol(nonNA)) {
   nonNA[, i] <- str_count(nonNA$requirements, str_c(c("([^[:alpha:]]", "[[:punct:][:blank:]]?", colnames(nonNA)[i], "[[:punct:][:blank:]]{1})"), collapse = ""))
 }
+for(i in 3:ncol(sf_nonNA)) {
+  nonNA[, i] <- str_count(sf_nonNA$requirements, str_c(c("([^[:alpha:]]", "[[:punct:][:blank:]]?", colnames(sf_nonNA)[i], "[[:punct:][:blank:]]{1})"), collapse = ""))
+}
 
 # dataset for NA
 dataNA <- separateCols %>%
+  # filter for non-NA
+  filter(is.na(requirements))
+sf_dataNA <- sf_separateCols %>%
   # filter for non-NA
   filter(is.na(requirements))
 
 # get counts of keywords
 for(i in 3:ncol(dataNA)) {
   dataNA[, i] <- str_count(dataNA$briefing, str_c(c("([^[:alpha:]]", "[[:punct:][:blank:]]?", colnames(dataNA)[i], "[[:punct:][:blank:]]{1})"), collapse = ""))
+}
+for(i in 3:ncol(sf_dataNA)) {
+  sf_dataNA[, i] <- str_count(sf_dataNA$briefing, str_c(c("([^[:alpha:]]", "[[:punct:][:blank:]]?", colnames(sf_dataNA)[i], "[[:punct:][:blank:]]{1})"), collapse = ""))
 }
 
 # # supplemental cleaning dataNA
@@ -98,11 +139,17 @@ for(i in 3:ncol(dataNA)) {
 #   mutate(machine_learning = str_count(briefing, "([[:punct:][:blank:]]?(machine learning)[[:punct:][:blank:]]{1})"))
 
 # bind rows of NA and nonNA
-jobPostings <- bind_rows(nonNA, dataNA) %>%
-  select(-52)
+jobPostings <- bind_rows(nonNA, dataNA)
+sf_jobPostings <- bind_rows(sf_nonNA, sf_dataNA)
 
 # create keyword summary
 keywordSummary <- jobPostings %>%
+  select(-(1:2)) %>%
+  gather(keyword, kw_count) %>%
+  group_by(keyword) %>%
+  summarise(kw_count = sum(kw_count, na.rm = TRUE))
+
+sf_keywordSummary <- sf_jobPostings %>%
   select(-(1:2)) %>%
   gather(keyword, kw_count) %>%
   group_by(keyword) %>%
@@ -116,9 +163,13 @@ keywordSummary <- jobPostings %>%
 # show table
 knitr::kable(head(jobPostings, 10), "html") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+knitr::kable(head(sf_jobPostings, 10), "html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 
 # write csv
 write_csv(jobPostings, "./data/jobpostings.csv")
 write_csv(keywordSummary, "./data/keywordsummary.csv")
+write_csv(sf_jobPostings, "./data/jobpostings.csv")
+write_csv(sf_keywordSummary, "./data/keywordsummary.csv")
 ```
 
