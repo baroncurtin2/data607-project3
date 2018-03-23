@@ -90,7 +90,7 @@ dataNA %<>%
  
 # # supplemental cleaning nonNA
 nonNA %<>%
-  mutate(sql = str_count(briefing, "([[:punct:][:blank:]]?sql[[:punct:][:blank:]]{1})")) %>%
+  mutate(sql = str_count(briefing, "([[:punct:][:blank:]]?(sql)[[:punct:][:blank:]]{1})")) %>%
   mutate(machine_learning = str_count(briefing, "([[:punct:][:blank:]]?(machine learning)[[:punct:][:blank:]]{1})"))
 
 # bind rows of NA and nonNA
@@ -102,7 +102,7 @@ keywordSummary <- jobPostings %>%
   select(-(1:2)) %>%
   gather(keyword, kw_count) %>%
   group_by(keyword) %>%
-  summarise(kw_count = sum(kw_count))
+  summarise(kw_count = sum(kw_count, na.rm = TRUE))
 ```
   
   
