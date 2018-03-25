@@ -89,7 +89,7 @@ sf_separateCols <- sf_jobPostings %>%
 
 # add search term columns
 separateCols <- cbind(separateCols, termsDf)
-sf_separateCols <- cbind(sf_separateCols, termsDf) 
+sf_separateCols <- cbind(sf_separateCols, sf_termsDf) 
 
 # dataset for non-NA
 nonNA <- separateCols %>%
@@ -107,7 +107,7 @@ for(i in 3:ncol(nonNA)) {
   nonNA[, i] <- str_count(nonNA$requirements, str_c(c("([^[:alpha:]]", "[[:punct:][:blank:]]?", colnames(nonNA)[i], "[[:punct:][:blank:]]{1})"), collapse = ""))
 }
 for(i in 3:ncol(sf_nonNA)) {
-  nonNA[, i] <- str_count(sf_nonNA$requirements, str_c(c("([^[:alpha:]]", "[[:punct:][:blank:]]?", colnames(sf_nonNA)[i], "[[:punct:][:blank:]]{1})"), collapse = ""))
+  sf_nonNA[, i] <- str_count(sf_nonNA$requirements, str_c(c("([^[:alpha:]]", "[[:punct:][:blank:]]?", colnames(sf_nonNA)[i], "[[:punct:][:blank:]]{1})"), collapse = ""))
 }
 
 # dataset for NA
@@ -157,7 +157,6 @@ sf_keywordSummary <- sf_jobPostings %>%
 ```
   
   
-  
 ## Generate CSV Files
 ```{r write-csv}
 # show table
@@ -169,7 +168,7 @@ knitr::kable(head(sf_jobPostings, 10), "html") %>%
 # write csv
 write_csv(jobPostings, "./data/jobpostings.csv")
 write_csv(keywordSummary, "./data/keywordsummary.csv")
-write_csv(sf_jobPostings, "./data/jobpostings.csv")
-write_csv(sf_keywordSummary, "./data/keywordsummary.csv")
+write_csv(sf_jobPostings, "./data/sf_jobpostings.csv")
+write_csv(sf_keywordSummary, "./data/sf_keywordsummary.csv")
 ```
 
