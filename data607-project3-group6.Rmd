@@ -100,11 +100,13 @@ for (i in 1:10)     {
 ```
 
 ### Data Cleaning/Tidying
-The data from Indeed was scraped into .txt files. The .txt files had to be loaded into R, cleaned, tidied, and transformed into useful data sets.
+The data from Indeed was scraped into .txt files. The .txt files had to be loaded into R, cleaned, tidied, and transformed into useful data sets. After looking at many of the job postings on Indeed, as well as the HTML code in the text files, it was determined that most of the job postings had two distinct sections: one we dubbed “briefing” and the other “requirements.” 
 
-The group came up with a list of about 100 keywords that came to mind when we thought about Data Science. These keywords encompassed words that many of us were already familiar with and attribute to Data Science, some were from scanning various job postings, and other's came from a Glassdoor article they published on data science skills.
+Each job posting, would have to be split on a particular character string. In most cases, this was the beginning of an unordered list, or “<ul>” tag. We called everything before the first “<ul>” tag the “briefing”. This is typically where most job postings would contain brief or summary information about the company and/or role. We wanted to exclude any keyword hits from our keyword counts from this section as this section typically is not used to present the functional requirements/skills for the role.
 
-Two datasets were created from searching for the keywords. One maintained a "columnar" format, where every column was a keyword and contained the count, and every row represented a different job posting. The other dataset was a summary dataset that contained one keyword per row, and a summation of the count attributed to that keyword across job postings.
+The requirements section would be everything after the first “<ul>” tag. This is where we used the stringr package and its host of string matching functions, combined with RegEx, to find how many times keywords appeared within a job posting. The group came up with a list of about 100 keywords that came to mind when we thought about Data Science. These keywords encompassed words that many of us were already familiar with and attribute to Data Science, some were from scanning various job postings, and other’s came from a Glassdoor article they published on data science skills.
+
+Two datasets were created from searching for the keywords. One maintained a “columnar” format, where every column was a keyword and contained the count, and every row represented a different job posting. The other dataset was a summary dataset that contained one keyword per row, and a summation of the count attributed to that keyword across job postings.
 
 #### Load Dataset
 ```{r load-data}
