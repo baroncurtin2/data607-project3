@@ -628,7 +628,7 @@ ggplot(long) +
   coord_flip()
 ```
 
-![Comparison of San Francisco and Whiteplains.](/Users/nicsc/Documents/School documents/comparison.png)
+![Comparison of San Francisco and Whiteplains.](./pictures/comparison.png)
 
 ### Conclusions
 It seems that the data from San Francisco, CA has more keywords that relate to technical skills - SQL (183 vs. 136), Python (292 vs. 185), R (201 vs. 178) and want a candidate with an advanced degree: phd (121 vs. 95), masters (31 vs. 24).
