@@ -12,7 +12,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-libs <- c("tidyverse", "magrittr", "RCurl", "XML", "kableExtra", "tm", "wordcloud", "reshape2", "fpc", "cluster", "knitr")
+libs <- c("tidyverse", "magrittr", "RCurl", "XML", "kableExtra", "tm", "wordcloud", "reshape2", "fpc", "cluster", "knitr", "gridExtra")
 lapply(libs, require, character.only=TRUE)
 ```
 
@@ -315,13 +315,25 @@ wordcloud(words[1:100], frequency[1:100],
           colors=brewer.pal(8, "Dark2"))
 ```
 
-```{r}
+```{r echo=FALSE, message=FALSE}
+library(gridExtra)
 wf <- data.frame(word=names(frequency), frequency=frequency)
+set.a<-subset(wf,frequency>325)
+set.b<-subset(set.a,frequency>380)
+set.b<-subset(set.b,frequency<610)
+set.c<-subset(set.a,frequency>610)
+set.c<-subset(set.c,frequency<1000)
+set.a<-subset(set.a,frequency<380)
 
-p <- ggplot(subset(wf, frequency>200), aes(x = reorder(word, -frequency), y = frequency)) +
-  geom_bar(stat = "identity") +
-  theme(axis.text.x=element_text(angle=45, hjust=1))
-p
+plot.a <- ggplot(set.a, aes(x = reorder(word, -frequency), y = frequency)) +
+  geom_bar(stat = "identity",fill='#35a2c4') + theme(axis.text.x=element_text(angle=45, hjust=1))+coord_flip()+ theme(panel.background = element_rect(fill = '#adc8d1'))+xlab("")+ylab("")+ylim(0,800)
+
+plot.b <- ggplot(set.b, aes(x = reorder(word, -frequency), y = frequency)) +
+  geom_bar(stat = "identity",fill='#35a2c4') + theme(axis.text.x=element_text(angle=45, hjust=1))+coord_flip()+ theme(panel.background = element_rect(fill = '#adc8d1'))+xlab("")+ylab("")+ylim(0,800)
+
+plot.c <- ggplot(set.c, aes(x = reorder(word, -frequency), y = frequency)) +
+  geom_bar(stat = "identity",fill='#35a2c4') + theme(axis.text.x=element_text(angle=45, hjust=1))+coord_flip()+ theme(panel.background = element_rect(fill = '#adc8d1'))+xlab("")+ylim(0,800)
+grid.arrange(plot.a, plot.b,plot.c, nrow = 3)
 ```
 
 From the entire indeed listing for San Fransisco, It seems that the keywords: data, experience, and team are the top three skills in job listings. 
@@ -374,11 +386,10 @@ kable(frequency)
 wf <- data.frame(word=names(frequency), frequency=frequency)
 dataset1 <- wf
 
-p2 <- ggplot(subset(wf, frequency>50), aes(x = reorder(word, -frequency), y = frequency)) +
-  geom_bar(stat = "identity", aes(fill= reorder(word, -frequency))) +
-  theme(axis.text.x=element_text(angle=45, hjust=1)) + 
-  theme(legend.position="none")
-p2
+p <- ggplot(subset(wf, frequency>50), aes(x = reorder(word, -frequency), y = frequency)) +
+  geom_bar(stat = "identity",fill='#35a2c4') +
+  theme(axis.text.x=element_text(angle=45, hjust=1))+ theme(panel.background = element_rect(fill = '#adc8d1'))+xlab("Data Science Skills")
+p
 ```
 
 
@@ -466,10 +477,26 @@ wf <- data.frame(word=names(frequency), frequency=frequency)
 
 
 ```{r echo=FALSE}
-p <- ggplot(subset(wf, frequency>200), aes(x = reorder(word, -frequency), y = frequency)) +
-  geom_bar(stat = "identity") +
-  theme(axis.text.x=element_text(angle=45, hjust=1))
-p
+set.a<-subset(wf,frequency>316)
+set.b<-subset(set.a,frequency>380)
+set.b<-subset(set.b,frequency<500)
+set.c<-subset(set.a,frequency>500)
+set.c<-subset(set.c,frequency<1000)
+set.a<-subset(set.a,frequency<380)
+plot.a <- ggplot(set.a, aes(x = reorder(word, -frequency), y = frequency)) +
+  geom_bar(stat = "identity",fill='#cbe6ef') +
+  theme(axis.text.x=element_text(angle=45, hjust=1))+coord_flip()+ylim(0,900)+xlab("")+ylab("")+ theme(panel.background = element_rect(fill = '#59b9db'))
+
+plot.b <- ggplot(set.b, aes(x = reorder(word, -frequency), y = frequency)) +
+  geom_bar(stat = "identity",fill='#cbe6ef') +
+  theme(axis.text.x=element_text(angle=45, hjust=1))+coord_flip()+ylim(0,900)+xlab("")+ylab("")+ theme(panel.background = element_rect(fill = '#59b9db'))
+
+plot.c <- ggplot(set.c, aes(x = reorder(word, -frequency), y = frequency)) +
+  geom_bar(stat = "identity",fill='#cbe6ef') +
+  theme(axis.text.x=element_text(angle=45, hjust=1))+coord_flip()+ylim(0,900)+xlab("")+ theme(panel.background = element_rect(fill = '#59b9db'))
+
+
+grid.arrange(plot.a, plot.b,plot.c, nrow = 3)
 ```
 
 Looking at this data for the east coast, it seems the top mentioned keywords in the entire dataset are: data and experience.  
@@ -527,11 +554,10 @@ wf <- data.frame(word=names(frequency), frequency=frequency)
 
 dataset2 <- wf
 
-p1 <- ggplot(subset(wf, frequency>50), aes(x = reorder(word, -frequency), y = frequency)) +
-  geom_bar(stat = "identity", aes(fill= reorder(word, -frequency))) +
-  theme(axis.text.x=element_text(angle=45, hjust=1)) +
-  theme(legend.position="none")
-p1
+p <- ggplot(subset(wf, frequency>50), aes(x = reorder(word, -frequency), y = frequency)) +
+  geom_bar(stat = "identity",fill='#cbe6ef') +
+  theme(axis.text.x=element_text(angle=45, hjust=1))+ theme(panel.background = element_rect(fill = '#59b9db'))+xlab("Data Science Skills")
+p
 ```
 
 ```{r echo=FALSE}
@@ -603,8 +629,6 @@ ggplot(long) +
 ```
 
 ![Comparison of San Francisco and Whiteplains.](/Users/nicsc/Documents/School documents/comparison.png)
-
-### Data Visualization
 
 ### Conclusions
 It seems that the data from San Francisco, CA has more keywords that relate to technical skills - SQL (183 vs. 136), Python (292 vs. 185), R (201 vs. 178) and want a candidate with an advanced degree: phd (121 vs. 95), masters (31 vs. 24).
