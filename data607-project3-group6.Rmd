@@ -414,8 +414,8 @@ clusplot(as.matrix(d), kfit$cluster, color=T, shade=T, labels=2, lines=0)
 ### Data Analysis
 Looking at the filtered data (tables and visualizations), it helps give us, as future Data Scientists, a deeper understanding of some of the top skills that are needed.  It seems that Data Scientists need to know different programing languages (Python, R, SQL).  Data Scientists also need to understand statistics.  This is also shown in our clustering diagrams - analysis, python, statistics, data, and SQL are the most related when compared to all of the other skills.
 
-##The above data looks at skills found on the West coast of the United States.  
-##Below we're going to take a look at the skills needed on the east coast, and later compare.
+The above data looks at skills found on the West coast of the United States.  
+#### Below we're going to take a look at the skills needed on the east coast, and later compare.
 
 The approach is the same as above regarding the code, so to save space the code will only show needed outputs.
 
@@ -584,7 +584,7 @@ Looking at the filtered data, it seems that Data Scientists need to know differe
 
 This is also shown in our clustering diagrams - analysis, python, statistics, and data, are the most related when compared to all of the other skills.  (Notice how SQL is less related in WP, NY than in SF, CA.)
 
-#**Now that we have both datasets, lets see how they compare to each other:**
+#### **Now that we have both datasets, lets see how they compare to each other:**
 
 
 Comparsion of the two datasets - White Plains, NY and San Francisco, CA by frequency of skills:
